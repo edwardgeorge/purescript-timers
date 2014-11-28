@@ -12,9 +12,10 @@ type EffTimer e a = Eff (timer :: Timer | e) a
 
 foreign import timeout """
   function timeout(time){                     
+    var win = typeof global !== 'undefined' ? global : window;
     return function(fn){                     
       return function(){                     
-        return window.setTimeout(function(){ 
+        return win.setTimeout(function(){
           fn();                              
         }, time);                            
       };                                     
@@ -24,17 +25,19 @@ foreign import timeout """
 
 foreign import clearTimeout """
   function clearTimeout(timer){
+    var win = typeof global !== 'undefined' ? global : window;
     return function(){
-      return window.clearTimeout(timer);
+      return win.clearTimeout(timer);
     };
   }
 """ :: forall e. Timeout -> EffTimer e Unit
 
 foreign import interval """
   function interval(time){
+    var win = typeof global !== 'undefined' ? global : window;
     return function(fn){
       return function(){
-        return window.setInterval(function(){ 
+        return win.setInterval(function(){
           fn();
         }, time);
       };
@@ -44,8 +47,9 @@ foreign import interval """
 
 foreign import clearInterval """
   function clearInterval(timer){
+    var win = typeof global !== 'undefined' ? global : window;
     return function(){
-      return window.clearInterval(timer);
+      return win.clearInterval(timer);
     };
   }
 """ :: forall e. Interval -> EffTimer e Unit
